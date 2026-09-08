@@ -35,6 +35,7 @@ public class Paddle : MonoBehaviour
     const float LeftX = -7.5f;
     const float RightX = 7.5f;
 
+    //sends the set positions to the PlayerClient Behavior to help spawn in paddles 
     public float GetHostPosition()
     {
         return LeftX;
@@ -45,33 +46,27 @@ public class Paddle : MonoBehaviour
         return RightX;
     }
 
-    // void Start()
-    // {
-    //     ApplySidePosition();
-    // }
-
-    // void ApplySidePosition()
-    // {
-    //     Debug.Log(side);
-    //     float x = side == PaddleSide.Left ? LeftX : RightX;
-    //     Vector3 paddlePos = transform.position;
-    //     paddlePos.x = x;
-    //     transform.position = paddlePos;
-    // }
-
-    public void CheckMovePaddle()
+    
+    //checks if the paddle is moved, only done by the owner
+    public float CheckMovementDirection()
     {
         float direction = 0f;
         if (Keyboard.current[moveUpKey].isPressed) direction += 1f;
         if (Keyboard.current[moveDownKey].isPressed) direction -= 1f;
 
+        return direction;
+    }
+    
+    //moves the paddle based on the given direction, only done by ther server 
+    public void MovePaddle(float direction)
+    {
         Vector3 newPosition = transform.position + new Vector3(0f, 0f, direction) * speed * Time.deltaTime;
         newPosition.z = Mathf.Clamp(newPosition.z, minTravelZ, maxTravelZ);
 
         transform.position = newPosition;
     }
 
-    // void OnCollisionEnter(Collision other)
+    //collisions are only detected by the server 
     public void PaddleCollisionEnter(Collision other)
     {   
         Debug.Log("collission happened");
