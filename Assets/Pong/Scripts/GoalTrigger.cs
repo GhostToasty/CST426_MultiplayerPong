@@ -28,6 +28,7 @@ public class GoalTrigger : NetworkBehaviour
     }
 
 
+    //only the server can verify if the trigger is activated 
     void OnTriggerEnter(Collider other)
     {
         if (!IsServer) return;

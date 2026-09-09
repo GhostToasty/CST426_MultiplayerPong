@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 8936796061542835020}
   - component: {fileID: -3850775923729979756}
   - component: {fileID: 1240963119564791342}
-  - component: {fileID: 2985074285337778701}
+  - component: {fileID: 5601728760988905771}
   m_Layer: 0
   m_Name: Player_NGO
   m_TagString: Untagged
@@ -177,7 +177,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   paddle: {fileID: 8936796061542835020}
   paddleSide: 0
---- !u!114 &2985074285337778701
+--- !u!114 &5601728760988905771
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -186,11 +186,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1462054353085319320}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e60f0ac581822cf4cb2b4deb4fd7a197, type: 3}
+  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ClientNetworkTransform
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkTransform
   ShowTopMostFoldoutHeaderGroup: 1
-  NetworkTransformExpanded: 1
+  NetworkTransformExpanded: 0
   AutoOwnerAuthorityTickOffset: 1
   PositionInterpolationType: 0
   RotationInterpolationType: 0

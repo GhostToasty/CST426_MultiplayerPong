@@ -1,5 +1,6 @@
 using UnityEngine;
 using Unity.Netcode;
+using UnityEngine.InputSystem;
 using System.Collections.Generic;
 using Unity.Collections.LowLevel.Unsafe;
 using UnityEditor.ShaderGraph.Internal;
@@ -18,6 +19,8 @@ public class PlayerClientBehavior : NetworkBehaviour
             $"[Player] {name} spawned | ownerClientId={OwnerClientId} | " +
             $"isOwner={IsOwner} | isServer={IsServer} | isClient={IsClient} | isHost={IsHost}");
     
+        //only lets the server spawn in the paddles
+        if (!IsServer) return;
         SpawnPaddlePlacement();
     }
 
@@ -27,11 +30,11 @@ public class PlayerClientBehavior : NetworkBehaviour
         Debug.Log($"[Player] {name} despawned");
     }
 
-    private void Update()
-    {
-        if (!IsOwner) return;
-        paddle.CheckMovePaddle();
-    } 
+    // private void Update()
+    // {
+    //     if (!IsOwner) return;
+    //     paddle.CheckMovePaddle();
+    // } 
 
 
     private void SpawnPaddlePlacement()
@@ -83,11 +86,31 @@ public class PlayerClientBehavior : NetworkBehaviour
         transform.position = assignedPosition;
     }
 
+    //only the server is able to check for collisions with the paddle 
     void OnCollisionEnter(Collision other)
     {
         if(!IsServer) return;
 
         paddle.PaddleCollisionEnter(other);
+    }
+
+    //allows only the server to change to direction of the paddle based on the owners input 
+    [Rpc(target:SendTo.Server)]
+    private void UpdatePaddleMovementRpc(float direction)
+    {
+        if (!IsServer) return;
+        
+        paddle.MovePaddle(direction);
+    }
+
+    
+    //checks for keyboard input only for the owner
+    //the server cannot check this because only the owner as access to their current keyboard 
+    private void Update()
+    {
+        if (!IsOwner) return;
+
+        UpdatePaddleMovementRpc(paddle.CheckMovementDirection());
     }
 
 }

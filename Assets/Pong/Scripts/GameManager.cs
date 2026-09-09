@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using Unity.Netcode;
+using Unity.Netcode.Components;
 
 /*
  * GameManager owns the local match rules: scoring, win checks, and ball resets.
@@ -21,6 +22,8 @@ public class GameManager : NetworkBehaviour
 
     const int ScoreToWin = 11;
 
+    //network variables are set so that it can be detected by both clients later
+    //makes sure that only the server can make changes, but the clients can still read it  
     private NetworkVariable<int>_leftPlayerScoreServer = new NetworkVariable<int>
         (0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
@@ -36,6 +39,8 @@ public class GameManager : NetworkBehaviour
             $"{name} spawned | ownerClientId={OwnerClientId} | " +
             $"IsServerOwned={IsServerOwned}");
         
+        //signs up network variables for when their score changes
+        //the sign up allows both clients to read the value 
         _leftPlayerScoreServer.OnValueChanged += HandleLeftScoreChanged;
         _rightPlayerScoreServer.OnValueChanged += HandleRightScoreChanged;
 
@@ -56,12 +61,15 @@ public class GameManager : NetworkBehaviour
         if (!IsServer) return;
         
         Debug.Log("game started");
+        
+        //the network object of the instantiated ball is grabbed
         ball = serverBallSpawner.SpawnedBall;
 
         float direction = Random.value < 0.5f ? -1f : 1f;
         ResetBall(direction);
     }
 
+    //only the server is allowed to make changes to the score 
     public void OnGoalScored(PaddleSide scoringSide)
     {
         if (!IsServer) return;
@@ -91,6 +99,7 @@ public class GameManager : NetworkBehaviour
         }
     }
 
+    //uses network variables to update the text 
     void UpdateScore()
     {
         Debug.Log("score updated");
@@ -112,8 +121,11 @@ public class GameManager : NetworkBehaviour
         ballRigidbody.position = startPosition;
         ballRigidbody.linearVelocity = newVelocity;
         ballRigidbody.angularVelocity = Vector3.zero;
+
+        ball.GetComponent<NetworkTransform>().Teleport(startPosition, Quaternion.identity, ball.transform.localScale);
     }
 
+    //clients signing up for these notifs allows servers to make changes but for client ui to still update
     private void HandleLeftScoreChanged(int previousValue, int newValue)
     {
         UpdateScore();

@@ -51,6 +51,7 @@ public class SessionManager : NetworkBehaviour
         sessionUI.gameObject.SetActive(false);
     }
 
+    //checks how many paddles are in the scene, only starts the game when it detects two paddles
     public void CheckReadyPlayers()
     {
         if (!IsServer) return;

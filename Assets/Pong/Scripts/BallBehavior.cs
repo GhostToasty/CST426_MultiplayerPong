@@ -4,18 +4,16 @@ using Unity.Netcode;
 public class BallBehavior : NetworkBehaviour
 {
     public bool IsServerOwned;
-    // private Rigidbody rb;
     
     public override void OnNetworkSpawn()
     {
+        //ensures that the ball is owned by the server after it's instantiated 
         name = "ServerBall";
         IsServerOwned = IsSpawned && OwnerClientId == NetworkManager.ServerClientId;
         
         Debug.Log(
             $"{name} spawned | ownerClientId={OwnerClientId} | " +
             $"IsServerOwned={IsServerOwned}");
-
-        // SetRigidbody();
     }
 
     public override void OnNetworkDespawn()
@@ -27,13 +25,5 @@ public class BallBehavior : NetworkBehaviour
     {
         if (!IsServer) return;
     }
-
-    // private void SetRigidbody()
-    // {
-    //     rb = GetComponent<Rigidbody>();
-
-    //     if (IsServer)
-    //         rb.interpolation = RigidbodyInterpolation.Interpolate;
-    // }
 
 }
