@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using Unity.Netcode;
+using Unity.Netcode.Components;
 
 /*
  * GameManager owns the local match rules: scoring, win checks, and ball resets.
@@ -120,6 +121,8 @@ public class GameManager : NetworkBehaviour
         ballRigidbody.position = startPosition;
         ballRigidbody.linearVelocity = newVelocity;
         ballRigidbody.angularVelocity = Vector3.zero;
+
+        ball.GetComponent<NetworkTransform>().Teleport(startPosition, Quaternion.identity, ball.transform.localScale);
     }
 
     //clients signing up for these notifs allows servers to make changes but for client ui to still update
